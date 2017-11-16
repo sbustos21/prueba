@@ -16,3 +16,4 @@ com\mycorp\Zendesk$BasicAsyncCompletionHandler.class
 com\mycorp\Zendesk.class
 com\mycorp\support\FicheroAdjunto.class
 com\mycorp\dto\ValueCodeDTO.class
+com\mycorp\util\ZendeskUtility.class

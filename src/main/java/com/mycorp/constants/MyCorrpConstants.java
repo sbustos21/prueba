@@ -1,5 +1,6 @@
 package com.mycorp.constants;
 
+import java.util.regex.Pattern;
 
 /**
  * Clase que contiene la declaración de constantes necesarias para el funcionamiento de la GUI
@@ -17,4 +18,6 @@ public final class MyCorrpConstants {
     public static final String ESCAPED_LINE_SEPARATOR = "\\n";
     public static final String ESCAPE_ER = "\\";
     public static final String HTML_BR = "<br/>";
+    public static final Pattern RESTRICTED_PATTERN = Pattern.compile("%2B", Pattern.LITERAL);
+    public static final String JSON = "application/json; charset=UTF-8";
 }

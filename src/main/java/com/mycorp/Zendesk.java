@@ -24,6 +24,7 @@ import com.ning.http.client.Request;
 import com.ning.http.client.RequestBuilder;
 import com.ning.http.client.Response;
 import com.ning.http.client.uri.Uri;
+import com.mycorp.util.ZendeskUtility;;
 
 public class Zendesk implements Closeable {
     private static final String JSON = "application/json; charset=UTF-8";
@@ -61,8 +62,8 @@ public class Zendesk implements Closeable {
     }
 
     public TicketDTO createTicket(TicketDTO ticket) {
-        return complete(submit(req("POST", cnst("/tickets.json"),
-                        JSON, json(Collections.singletonMap("ticket", ticket))),
+        return ZendeskUtility.complete(submit(ZendeskUtility.req("POST", ZendeskUtility.cnst("/tickets.json", url),
+                        JSON, json(Collections.singletonMap("ticket", ticket)),realm,  oauthToken),
                 handle(TicketDTO.class, "ticket")));
     }
 
@@ -72,22 +73,7 @@ public class Zendesk implements Closeable {
         } catch (JsonProcessingException e) {
             throw new ZendeskException(e.getMessage(), e);
         }
-    }
-
-    
-
-    private Request req(String method, Uri template, String contentType, byte[] body) {
-        RequestBuilder builder = new RequestBuilder(method);
-        if (realm != null) {
-            builder.setRealm(realm);
-        } else {
-            builder.addHeader("Authorization", "Bearer " + oauthToken);
-        }
-        builder.setUrl(RESTRICTED_PATTERN.matcher(template.toString()).replaceAll("+")); //replace out %2B with + due to API restriction
-        builder.addHeader("Content-type", contentType);
-        builder.setBody(body);
-        return builder.build();
-    }
+    }    
 
     public static ObjectMapper createMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -96,14 +82,6 @@ public class Zendesk implements Closeable {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
-    }
-
-    private Uri cnst(String template) {
-        return Uri.create(url + template);
-    }
-
-    private boolean isStatus2xx(Response response) {
-        return response.getStatusCode() / 100 == 2;
     }
 
     private <T> ListenableFuture<T> submit(Request request, ZendeskAsyncCompletionHandler<T> handler) {
@@ -120,15 +98,6 @@ public class Zendesk implements Closeable {
         return client.executeRequest(request, handler);
     }
 
-    private void logResponse(Response response) throws IOException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response HTTP/{} {}\n{}", response.getStatusCode(), response.getStatusText(),
-                    response.getResponseBody());
-        }
-        if (logger.isTraceEnabled()) {
-            logger.trace("Response headers {}", response.getHeaders());
-        }
-    }
 
     private boolean isRateLimitResponse(Response response) {
         return response.getStatusCode() == 429;
@@ -152,8 +121,8 @@ public class Zendesk implements Closeable {
 
         @Override
         public T onCompleted(Response response) throws Exception {
-            logResponse(response);
-            if (isStatus2xx(response)) {
+        	ZendeskUtility.logResponse(response, logger);
+            if (ZendeskUtility.isStatus2xx(response)) {
                 if (typeParams.length > 0) {
                     JavaType type = mapper.getTypeFactory().constructParametricType(clazz, typeParams);
                     return mapper.convertValue(mapper.readTree(response.getResponseBodyAsStream()).get(name), type);
@@ -200,19 +169,6 @@ public class Zendesk implements Closeable {
     //////////////////////////////////////////////////////////////////////
     // Static helper methods
     //////////////////////////////////////////////////////////////////////
-
-    private static <T> T complete(ListenableFuture<T> future) {
-        try {
-            return future.get();
-        } catch (InterruptedException e) {
-            throw new ZendeskException(e.getMessage(), e);
-        } catch (ExecutionException e) {
-            if (e.getCause() instanceof ZendeskException) {
-                throw (ZendeskException) e.getCause();
-            }
-            throw new ZendeskException(e.getMessage(), e);
-        }
-    }
 
     public static class Builder {
         private AsyncHttpClient client = null;
