@@ -1,6 +1,6 @@
-package com.mycorp.support;
+package com.mycorp.service;
 
-
+import com.mycorp.support.CorreoElectronico;
 
 public interface MensajeriaService {
 

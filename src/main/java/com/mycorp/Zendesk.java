@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.mycorp.support.Ticket;
+import com.mycorp.dto.TicketDTO;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
@@ -35,6 +35,7 @@ public class Zendesk implements Closeable {
     private final ObjectMapper mapper;
     private final Logger logger;
     private boolean closed = false;
+    private static final Pattern RESTRICTED_PATTERN = Pattern.compile("%2B", Pattern.LITERAL);
 
 
     private Zendesk(AsyncHttpClient client, String url, String username, String password) {
@@ -59,10 +60,10 @@ public class Zendesk implements Closeable {
         this.mapper = createMapper();
     }
 
-    public Ticket createTicket(Ticket ticket) {
+    public TicketDTO createTicket(TicketDTO ticket) {
         return complete(submit(req("POST", cnst("/tickets.json"),
                         JSON, json(Collections.singletonMap("ticket", ticket))),
-                handle(Ticket.class, "ticket")));
+                handle(TicketDTO.class, "ticket")));
     }
 
     private byte[] json(Object object) {
@@ -73,7 +74,7 @@ public class Zendesk implements Closeable {
         }
     }
 
-    private static final Pattern RESTRICTED_PATTERN = Pattern.compile("%2B", Pattern.LITERAL);
+    
 
     private Request req(String method, Uri template, String contentType, byte[] body) {
         RequestBuilder builder = new RequestBuilder(method);
