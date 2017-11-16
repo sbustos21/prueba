@@ -3,7 +3,6 @@ package com.mycorp;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -16,15 +15,13 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mycorp.dto.TicketDTO;
+import com.mycorp.util.ZendeskUtility;
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.ListenableFuture;
 import com.ning.http.client.Realm;
 import com.ning.http.client.Request;
-import com.ning.http.client.RequestBuilder;
-import com.ning.http.client.Response;
-import com.ning.http.client.uri.Uri;
-import com.mycorp.util.ZendeskUtility;;
+import com.ning.http.client.Response;;
 
 public class Zendesk implements Closeable {
     private static final String JSON = "application/json; charset=UTF-8";
