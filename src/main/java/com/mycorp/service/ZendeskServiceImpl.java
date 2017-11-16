@@ -1,4 +1,4 @@
-package com.mycorp;
+package com.mycorp.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mycorp.support.CorreoElectronico;
+import com.mycorp.Zendesk;
 import com.mycorp.dto.DatosClienteDTO;
 import com.mycorp.support.MensajeriaService;
 import com.mycorp.dto.PolizaDTO;
@@ -31,7 +32,7 @@ import util.datos.PolizaBasico;
 import util.datos.UsuarioAlta;
 
 @Service
-public class ZendeskService {
+public class ZendeskServiceImpl {
 
     /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger( ZendeskService.class );
