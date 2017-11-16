@@ -23,6 +23,7 @@ import com.mycorp.dto.DatosClienteDTO;
 import com.mycorp.dto.PolizaDTO;
 import com.mycorp.dto.TicketDTO;
 import com.mycorp.dto.ValueCodeDTO;
+import com.mycorp.support.Builder;
 import com.mycorp.support.CorreoElectronico;
 import com.mycorp.support.PolizaBasicoFromPolizaBuilder;
 import com.mycorp.constants.MyCorrpConstants;
@@ -159,7 +160,7 @@ public class ZendeskServiceImpl {
                 parseJsonBravo(datosServicio));
         ticket = ticket.replaceAll("["+MyCorrpConstants.ESCAPED_LINE_SEPARATOR+"]", " ");
 
-        try(Zendesk zendesk = new Zendesk.Builder(URL_ZENDESK).setUsername(ZENDESK_USER).setToken(TOKEN_ZENDESK).build()){
+        try(Zendesk zendesk = new Builder(URL_ZENDESK).setUsername(ZENDESK_USER).setToken(TOKEN_ZENDESK).build()){
             //TicketDTO
             TicketDTO petiZendesk = mapper.readValue(ticket, TicketDTO.class);
             zendesk.createTicket(petiZendesk);

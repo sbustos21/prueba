@@ -5,7 +5,6 @@ com\mycorp\dto\PolizaDTO.class
 com\mycorp\support\CorreoElectronico.class
 com\mycorp\dto\DatosClienteDTO.class
 com\mycorp\constants\MyCorrpConstants.class
-com\mycorp\Zendesk$Builder.class
 com\mycorp\support\PolizaBasicoFromPolizaBuilder.class
 com\mycorp\service\ZendeskServiceImpl.class
 com\mycorp\service\MensajeriaService.class
@@ -17,3 +16,4 @@ com\mycorp\Zendesk.class
 com\mycorp\support\FicheroAdjunto.class
 com\mycorp\dto\ValueCodeDTO.class
 com\mycorp\util\ZendeskUtility.class
+com\mycorp\support\Builder.class
